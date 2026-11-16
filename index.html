@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NULL_PS4 · Mods e ferramentas para PS4 desbloqueado</title>
 <meta name="description" content="Baixe ferramentas, plugins, mods e tutoriais para PS4 desbloqueado. Apenas homebrew.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src https://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'self' https://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap">
 <noscript><style>#boot{display:none}</style></noscript>
@@ -173,6 +173,7 @@ footer p{margin:0 0 8px;max-width:62ch}
     <p class="prompt">root@ps4:~$ ls /mods</p>
     <h1 class="gl" data-text="Mods e ferramentas para PS4 desbloqueado"><span class="dith">Mods e ferramentas para PS4 desbloqueado</span></h1>
     <p class="sub">Baixe, instale e personalize seu console. Tudo em um só lugar.</p>
+    <p class="sub"><a href="noticias.html" style="color:var(--accent);font-weight:700">&gt; ler as notícias da cena PS4</a></p>
     <div class="read"><span>sinal: <b>100%</b></span><span>arquivos: <b id="qtd">0</b></span><span>status: <b>online</b></span></div>
     <input class="search" id="busca" type="search" placeholder="buscar mod ou ferramenta" aria-label="Buscar mod ou ferramenta">
     <div class="chips" id="filtros"></div>
@@ -225,7 +226,7 @@ function aviso(txt){
 
 function desenhar(){
   var q=busca.value.trim().toLowerCase(); lista.textContent=""; var achou=0;
-  itens.forEach(function(it,i){
+  itens.concat(window.NOTICIAS||[]).forEach(function(it,i){
     if(atual!=="Todos"&&it.cat!==atual) return;
     if(q&&(it.nome+" "+it.desc).toLowerCase().indexOf(q)===-1) return;
     achou++;
@@ -253,6 +254,9 @@ $("qtd").textContent=itens.length;
 Array.prototype.forEach.call(document.querySelectorAll(".brand,h1"),function(el){el.style.setProperty("--d",(-Math.random()*2.7).toFixed(2)+"s")});
 desenhar();
 
+// ===== posts automáticos (notícias) =====
+fetch("posts.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)){window.NOTICIAS=d;$("qtd").textContent=itens.length+d.length;desenhar()}}).catch(function(){});
+
 // ===== itens do banco (se configurado) =====
 var db=null;
 if(CONFIG.URL&&CONFIG.KEY&&window.supabase){
@@ -260,7 +264,7 @@ if(CONFIG.URL&&CONFIG.KEY&&window.supabase){
   db.from("itens").select("*").order("criado",{ascending:false}).then(function(r){
     if(r.data&&r.data.length){
       itens=r.data.map(function(x){return {nome:x.nome,cat:x.cat,pasta:x.pasta,desc:x.descricao||"",url:x.url}});
-      $("qtd").textContent=itens.length; desenhar();
+      $("qtd").textContent=itens.length+(window.NOTICIAS||[]).length; desenhar();
     }
   });
 }
