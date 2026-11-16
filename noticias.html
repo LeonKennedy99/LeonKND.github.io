@@ -1,0 +1,64 @@
+---
+layout: null
+title: Notícias
+---
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Notícias · NULL_PS4</title>
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap">
+<style>
+:root{--bg:#000;--panel:rgba(8,10,14,.84);--ink:#E9EEF2;--muted:#93A0AB;--line:#26303A;--accent:#00FF9C;--cyan:#00E5FF;--mag:#FF2E88;--yel:#FFD60A;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html,body{background:#000}
+body{margin:0;color:var(--ink);font:15px/1.7 "JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:6;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 3px)}
+.wrap{max-width:780px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+.hud{display:flex;justify-content:space-between;gap:12px;padding:14px 0;font-size:.78rem}
+.brand{font-weight:800;color:var(--accent);text-decoration:none;letter-spacing:.02em}
+.voltar{color:var(--muted);text-decoration:none}
+.voltar:hover{color:var(--accent)}
+.prompt{margin:28px 0 8px;color:var(--accent);font-size:.88rem}
+h1{margin:0 0 18px;font-size:clamp(1.7rem,7vw,2.6rem);line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.post{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--c,#00FF9C);border-radius:12px;padding:18px 20px;margin:14px 0}
+.meta{display:flex;gap:12px;font-size:.76rem;color:var(--muted)}
+.meta .cat{color:var(--c,#00FF9C);font-weight:700;text-transform:uppercase}
+.post h2.tit{margin:6px 0 4px;font-size:1.25rem;line-height:1.3}
+.post h2.tit a{color:var(--ink);text-decoration:none}
+.post h2.tit a:hover{color:var(--c,#00FF9C)}
+.leg{margin:0 0 10px;color:var(--muted)}
+.texto{overflow-wrap:anywhere}
+.texto a{color:var(--cyan)}
+.texto h2{font-size:1.05rem;color:var(--c,#00FF9C);margin:22px 0 8px}
+.texto img{max-width:100%;height:auto}
+.texto code{background:#0b0e12;border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+footer{padding:36px 0 56px;color:var(--muted);font-size:.8rem}
+footer p{margin:0 0 8px;max-width:62ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hud"><a class="brand" href="{{ '/' | relative_url }}">NULL_PS4</a><span><a class="voltar" href="{{ '/noticias.html' | relative_url }}">notícias</a> &nbsp;·&nbsp; <a class="voltar" href="{{ '/' | relative_url }}">downloads</a></span></div>
+
+  <p class="prompt">root@ps4:~$ cat /noticias</p>
+  <h1>Notícias da cena PS4</h1>
+{% for post in site.posts %}{% assign c = post.categories | last | downcase %}{% case c %}{% when 'plugin', 'payload' %}{% assign cor = '#FF2E88' %}{% assign secao = 'Plugins' %}{% when 'tutorial' %}{% assign cor = '#00FF9C' %}{% assign secao = 'Tutoriais' %}{% when 'mod' %}{% assign cor = '#FFD60A' %}{% assign secao = 'Mods' %}{% else %}{% assign cor = '#00E5FF' %}{% assign secao = 'Ferramentas' %}{% endcase %}
+  <article class="post" style="--c:{{ cor }}">
+    <div class="meta"><span class="cat">{{ c }}</span><span>{{ post.date | date: "%d/%m/%Y" }}</span></div>
+    <h2 class="tit"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+    {% if post.description %}<p class="leg">{{ post.description }}</p>{% endif %}
+    <div class="texto">{{ post.content }}</div>
+  </article>
+{% else %}
+  <p class="leg">Nenhuma notícia ainda.</p>
+{% endfor %}
+  <footer>
+    <p>Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.</p>
+    <p>Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.</p>
+  </footer>
+</div>
+</body>
+</html>
