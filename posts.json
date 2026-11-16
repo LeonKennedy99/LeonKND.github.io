@@ -1,0 +1,6 @@
+---
+layout: null
+---
+[{% assign primeiro = true %}{% for post in site.posts limit:60 %}{% assign dl = post.download %}{% if dl == nil or dl == "" %}{% assign partes = post.content | split: 'id="download"' %}{% if partes.size > 1 %}{% assign tmp = partes[1] | split: 'href="' %}{% assign dl = tmp[1] | split: '"' | first %}{% endif %}{% endif %}{% if dl contains 'http' %}{% assign c = post.categories | last | downcase %}{% case c %}{% when 'plugin', 'payload' %}{% assign cor = '#FF2E88' %}{% assign secao = 'Plugins' %}{% when 'tutorial' %}{% assign cor = '#00FF9C' %}{% assign secao = 'Tutoriais' %}{% when 'mod' %}{% assign cor = '#FFD60A' %}{% assign secao = 'Mods' %}{% else %}{% assign cor = '#00E5FF' %}{% assign secao = 'Ferramentas' %}{% endcase %}{% unless primeiro %},{% endunless %}{% assign primeiro = false %}
+{"nome":{{ post.title | jsonify }},"cat":{{ secao | jsonify }},"desc":{{ post.description | default: "" | jsonify }},"url":{{ dl | replace: "&amp;", "&" | jsonify }},"noticia":{{ post.url | relative_url | jsonify }}}{% endif %}{% endfor %}
+]
