@@ -1,53 +1,147 @@
 name: Traduzir para inglês
+
 on:
   push:
     paths: ["**/posts.json"]
   schedule:
     - cron: "10 13,18,21 * * *"
   workflow_dispatch:
+
 permissions:
   contents: write
   pages: write
+
 concurrency:
   group: traduzir
+
 jobs:
   traduzir:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
       - name: Traduzir
         env:
           MYMEMORY_EMAIL: ${{ secrets.MYMEMORY_EMAIL }}
         run: |
-          cat > t.js <<'EOT'
-          const fs=require("fs");
-          const E=process.env.MYMEMORY_EMAIL||"";
-          function acha(d,o){for(const n of fs.readdirSync(d,{withFileTypes:true})){if(n.name===".git"||n.name==="node_modules")continue;const p=d==="."?n.name:d+"/"+n.name;if(n.isFile()&&n.name==="posts.json")o.push(p);else if(n.isDirectory())acha(p,o)}return o}
-          const fl=acha(".",[]);console.log("posts.json encontrados:",fl.join(", ")||"nenhum");
-          let posts=[];for(const f of fl){try{const a=JSON.parse(fs.readFileSync(f,"utf8"));if(Array.isArray(a))posts=posts.concat(a)}catch(e){console.log("inválido:",f)}}
-          if(!posts.length){console.log("nenhum post para traduzir");process.exit(0)}
-          let cache={};try{cache=JSON.parse(fs.readFileSync("traducoes.json","utf8"))}catch(e){}
-          const ts=new Set();
-          posts.forEach(p=>["nome","desc","cat"].forEach(k=>{if(p&&typeof p[k]==="string"&&p[k].trim())ts.add(p[k].trim())}));
-          function partes(t){const o=[];let c="";for(let s of t.split(/(?<=[.!?])\s+/)){while(s.length>240){o.push(s.slice(0,240));s=s.slice(240)}if((c+" "+s).length>240){if(c)o.push(c);c=s}else c=c?c+" "+s:s}if(c)o.push(c);return o}
-          function dec(s){return s.replace(/&#(\d+);/g,(m,n)=>String.fromCharCode(n)).replace(/&quot;/g,'"').replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&")}
-          async function trad(t){const o=[];for(const p of partes(t)){
-            const r=await fetch("https://api.mymemory.translated.net/get?langpair=pt-BR%7Cen&q="+encodeURIComponent(p)+(E?"&de="+encodeURIComponent(E):""));
-            const j=await r.json();const s=j&&j.responseData&&j.responseData.translatedText;
-            if(!s||Number(j.responseStatus)!==200||/MYMEMORY WARNING|QUERY LENGTH/i.test(s))throw new Error("limite ou erro");
-            o.push(dec(s));await new Promise(r=>setTimeout(r,300))}
-            return o.join(" ")}
-          (async()=>{const out={};let parou=false;
-            for(const t of ts){if(cache[t]){out[t]=cache[t];continue}
-              if(parou)continue;
-              try{out[t]=await trad(t)}catch(e){parou=true;console.log("parou:",e.message)}}
-            fs.writeFileSync("traducoes.json",JSON.stringify(out,null,1));
-            console.log(Object.keys(out).length+" de "+ts.size+" textos traduzidos")})();
+          node <<'EOT'
+          const fs = require("fs");
+          const E = process.env.MYMEMORY_EMAIL || "";
+
+          function acha(d, o) {
+            for (const n of fs.readdirSync(d, { withFileTypes: true })) {
+              if (n.name === ".git" || n.name === "node_modules") continue;
+              const p = d === "." ? n.name : d + "/" + n.name;
+              if (n.isFile() && n.name === "posts.json") o.push(p);
+              else if (n.isDirectory()) acha(p, o);
+            }
+            return o;
+          }
+
+          const fl = acha(".", []);
+          console.log("posts.json encontrados:", fl.join(", ") || "nenhum");
+
+          let posts = [];
+          for (const f of fl) {
+            try {
+              const a = JSON.parse(fs.readFileSync(f, "utf8"));
+              if (Array.isArray(a)) posts = posts.concat(a);
+            } catch (e) {
+              console.log("inválido:", f);
+            }
+          }
+
+          if (!posts.length) {
+            console.log("nenhum post para traduzir");
+            process.exit(0);
+          }
+
+          let cache = {};
+          try {
+            cache = JSON.parse(fs.readFileSync("traducoes.json", "utf8"));
+          } catch (e) {}
+
+          const ts = new Set();
+          posts.forEach(p =>
+            ["nome", "desc", "cat"].forEach(k => {
+              if (p && typeof p[k] === "string" && p[k].trim()) ts.add(p[k].trim());
+            })
+          );
+
+          function partes(t) {
+            const o = [];
+            let c = "";
+            for (let s of t.split(/(?<=[.!?])\s+/)) {
+              while (s.length > 240) {
+                o.push(s.slice(0, 240));
+                s = s.slice(240);
+              }
+              if ((c + " " + s).length > 240) {
+                if (c) o.push(c);
+                c = s;
+              } else {
+                c = c ? c + " " + s : s;
+              }
+            }
+            if (c) o.push(c);
+            return o;
+          }
+
+          function dec(s) {
+            return s
+              .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+              .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
+              .replace(/&quot;/g, '"')
+              .replace(/&apos;/g, "'")
+              .replace(/&lt;/g, "<")
+              .replace(/&gt;/g, ">")
+              .replace(/&amp;/g, "&");
+          }
+
+          async function trad(t) {
+            const o = [];
+            for (const p of partes(t)) {
+              const url =
+                "https://api.mymemory.translated.net/get?langpair=pt-BR%7Cen&q=" +
+                encodeURIComponent(p) +
+                (E ? "&de=" + encodeURIComponent(E) : "");
+              const r = await fetch(url);
+              const j = await r.json();
+              const s = j && j.responseData && j.responseData.translatedText;
+              if (!s || Number(j.responseStatus) !== 200 || /MYMEMORY WARNING|QUERY LENGTH/i.test(s)) {
+                throw new Error("limite ou erro");
+              }
+              o.push(dec(s));
+              await new Promise(res => setTimeout(res, 300));
+            }
+            return o.join(" ");
+          }
+
+          (async () => {
+            const out = {};
+            let parou = false;
+            for (const t of ts) {
+              if (cache[t]) {
+                out[t] = cache[t];
+                continue;
+              }
+              if (parou) continue;
+              try {
+                out[t] = await trad(t);
+              } catch (e) {
+                parou = true;
+                console.log("parou:", e.message);
+              }
+            }
+            fs.writeFileSync("traducoes.json", JSON.stringify(out, null, 1));
+            console.log(Object.keys(out).length + " de " + ts.size + " textos traduzidos");
+          })();
           EOT
-          node t.js
+
       - name: Salvar
         env:
           GH_TOKEN: ${{ github.token }}
@@ -57,6 +151,7 @@ jobs:
           if [ -f traducoes.json ]; then git add traducoes.json; fi
           if ! git diff --cached --quiet; then
             git commit -m "Atualiza traduções"
+            git pull --rebase
             git push
             gh api -X POST "repos/${{ github.repository }}/pages/builds" || true
           fi
