@@ -92,7 +92,7 @@ footer p{margin:0 0 8px;max-width:62ch}
 .bar{height:6px;border:1px solid var(--accent)}.bar i{display:block;height:100%;background:var(--accent);width:0;animation:fill 1.9s linear forwards}
 @keyframes fill{to{width:100%}}
 .skip{margin-top:12px;color:var(--muted);font-size:.75rem}
-@media (max-width:480px){.item{grid-template-columns:1fr}.btn{grid-row:auto;grid-column:1;justify-self:start;margin-top:10px}.stat span:last-child{display:none}}
+@media (max-width:480px){.item{grid-template-columns:1fr}.btn{grid-row:auto;grid-column:1;justify-self:start;margin-top:10px}#relogio{display:none}}
 @media (prefers-reduced-motion:reduce){.gl::before,.gl::after,.dot,.toast{animation:none}#boot{display:none}}
 [hidden]{display:none!important}
 .view{position:fixed;inset:0;z-index:30;overflow:auto;background:#000;padding:calc(20px + env(safe-area-inset-top,0px)) 20px 40px}
@@ -108,12 +108,28 @@ footer p{margin:0 0 8px;max-width:62ch}
 .okm{color:var(--accent)}.errm{color:var(--mag)}
 .vin pre,.vin code{background:#0b0e12;border:1px solid var(--line);border-radius:8px;padding:10px;display:block;overflow:auto;font-size:.78rem;white-space:pre-wrap;word-break:break-all}
 .vin a{color:var(--cyan)}.vin li{margin:6px 0}
+.lgb{font:inherit;font-size:.78rem;font-weight:700;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:999px;padding:1px 10px;cursor:pointer}
+#lang{position:fixed;inset:0;z-index:25;background:#000;display:flex;align-items:center;justify-content:center;padding:24px;transition:opacity .4s}
+#lang.off{opacity:0;pointer-events:none}
+.lin{width:100%;max-width:420px}
+.lin h2{margin:0 0 6px;font-size:1.6rem;color:var(--accent)}
+.lin p{margin:0 0 22px;color:var(--muted)}
+.lbtn{display:flex;align-items:center;gap:14px;width:100%;margin-top:12px;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;color:var(--ink);background:var(--panel);border:1px solid var(--accent);border-radius:999px;padding:12px 22px}
+.lbtn:hover,.lbtn:focus-visible{background:var(--accent);color:#000;outline:none}
+.lbtn svg{flex:0 0 auto;border-radius:4px}
 </style>
 </head>
 <body>
 <div id="boot"><div class="bootbox"><pre id="bootlog"></pre><div class="bar"><i></i></div><div class="skip">toque para pular</div></div></div>
 <div class="bg" role="img" aria-label="Fundo com caveira encapuzada em estilo pixelado"></div>
 <div id="toasts" aria-live="polite"></div>
+
+<div id="lang" hidden role="dialog" aria-modal="true" aria-labelledby="lang-t"><div class="lin">
+  <h2 id="lang-t" class="gl" data-text="Selecione o idioma">Selecione o idioma</h2>
+  <p>Select your language</p>
+  <button class="lbtn" id="lang-pt" type="button"><svg width="34" height="24" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" fill="#009C3B"/><path d="M14 2.4 25 10 14 17.6 3 10Z" fill="#FFDF00"/><circle cx="14" cy="10" r="4.3" fill="#002776"/><path d="M9.8 9.1q4.4-1.5 8.6 1.3" stroke="#fff" stroke-width=".9" fill="none"/></svg><span>Português</span></button>
+  <button class="lbtn" id="lang-en" type="button"><svg width="34" height="24" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" fill="#B22234"/><path d="M0 2.3H28M0 5.4H28M0 8.5H28M0 11.5H28M0 14.6H28M0 17.7H28" stroke="#fff" stroke-width="1.5"/><rect width="12" height="10.8" fill="#3C3B6E"/><path d="M1.8 2.2H10.2M1.8 5.4H10.2M1.8 8.6H10.2" stroke="#fff" stroke-width="1.3" stroke-dasharray="0 2.1" stroke-linecap="round"/></svg><span>English</span></button>
+</div></div>
 
 <div id="admin" class="view" hidden><div class="vin">
   <h2>Painel admin</h2><p id="msg"></p>
@@ -166,26 +182,26 @@ footer p{margin:0 0 8px;max-width:62ch}
 <div class="wrap">
   <div class="hud">
     <span class="brand gl" data-text="NULL_PS4">NULL_PS4</span>
-    <span class="stat"><span><i class="dot"></i>conexão segura</span><span id="relogio">--:--:--</span></span>
+    <span class="stat"><span><i class="dot"></i><span data-i="conn">conexão segura</span></span><span id="relogio">--:--:--</span><button class="lgb" id="lgb" type="button" aria-label="Language">EN</button></span>
   </div>
 
   <section class="hero">
     <p class="prompt">root@ps4:~$ ls /mods</p>
-    <h1 class="gl" data-text="Mods e ferramentas para PS4 desbloqueado"><span class="dith">Mods e ferramentas para PS4 desbloqueado</span></h1>
-    <p class="sub">Baixe, instale e personalize seu console. Tudo em um só lugar.</p>
-    <p class="sub"><a href="noticias.html" style="color:var(--accent);font-weight:700">&gt; ler as notícias da cena PS4</a></p>
-    <div class="read"><span>sinal: <b>100%</b></span><span>arquivos: <b id="qtd">0</b></span><span>status: <b>online</b></span></div>
+    <h1 class="gl" id="tit" data-text="Mods e ferramentas para PS4 desbloqueado"><span class="dith">Mods e ferramentas para PS4 desbloqueado</span></h1>
+    <p class="sub" data-i="sub">Baixe, instale e personalize seu console. Tudo em um só lugar.</p>
+    <p class="sub"><a href="noticias.html" id="noti" data-i="noti" style="color:var(--accent);font-weight:700">&gt; ler as notícias da cena PS4</a></p>
+    <div class="read"><span><span data-i="sinal">sinal</span>: <b>100%</b></span><span><span data-i="arq">arquivos</span>: <b id="qtd">0</b></span><span><span data-i="status">status</span>: <b data-i="online">online</b></span></div>
     <input class="search" id="busca" type="search" placeholder="buscar mod ou ferramenta" aria-label="Buscar mod ou ferramenta">
     <div class="chips" id="filtros"></div>
   </section>
 
   <ul class="list" id="lista"></ul>
-  <p class="empty" id="vazio" hidden>Nada encontrado. Tente outra palavra.</p>
+  <p class="empty" id="vazio" data-i="vazio" hidden>Nada encontrado. Tente outra palavra.</p>
 
   <footer>
-    <p>Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.</p>
-    <p>Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.</p>
-    <p>Site de fã, sem ligação com a Ubisoft. Watch Dogs e DedSec são marcas dos seus donos.</p>
+    <p data-i="f1">Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.</p>
+    <p data-i="f2">Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.</p>
+    <p data-i="f3">Site de fã, sem ligação com a Ubisoft. Watch Dogs e DedSec são marcas dos seus donos.</p>
   </footer>
 </div>
 
@@ -193,13 +209,23 @@ footer p{margin:0 0 8px;max-width:62ch}
 <script>
 // 1) PREENCHA: Supabase > Project Settings > API (URL e chave "anon public").
 var CONFIG={URL:"https://tdddygqvmvncnhrkmpvv.supabase.co",KEY:"sb_publishable_WTWjyAkiWalxjCFjx83LWw_Z_OnTQbV"};
+// ===== idioma (pt/en) =====
+var LANG="pt"; try{if(localStorage.getItem("lang")==="en")LANG="en"}catch(e){}
+var T={
+pt:{titulo:"NULL_PS4 · Mods e ferramentas para PS4 desbloqueado",meta:"Baixe ferramentas, plugins, mods e tutoriais para PS4 desbloqueado. Apenas homebrew.",conn:"conexão segura",h1:"Mods e ferramentas para PS4 desbloqueado",sub:"Baixe, instale e personalize seu console. Tudo em um só lugar.",noti:"> ler as notícias da cena PS4",sinal:"sinal",arq:"arquivos",status:"status",online:"online",busca:"buscar mod ou ferramenta",vazio:"Nada encontrado. Tente outra palavra.",f1:"Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.",f2:"Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.",f3:"Site de fã, sem ligação com a Ubisoft. Watch Dogs e DedSec são marcas dos seus donos.",baixar:"Baixar",semlink:"link ainda não configurado: ",baixando:"acesso concedido: baixando "},
+en:{titulo:"NULL_PS4 · Mods and tools for jailbroken PS4",meta:"Download tools, plugins, mods and tutorials for jailbroken PS4. Homebrew only.",conn:"secure connection",h1:"Mods and tools for jailbroken PS4",sub:"Download, install and customize your console. Everything in one place.",noti:"> read the PS4 scene news",sinal:"signal",arq:"files",status:"status",online:"online",busca:"search mods or tools",vazio:"Nothing found. Try another word.",f1:"This site only shares homebrew, tools and mods. We do not host or promote pirated games.",f2:"Use at your own risk: back up your saves before installing anything.",f3:"Fan site, not affiliated with Ubisoft. Watch Dogs and DedSec are trademarks of their owners.",baixar:"Download",semlink:"link not set up yet: ",baixando:"access granted: downloading "}};
+var CATEN={Todos:"All",Ferramentas:"Tools",Plugins:"Plugins",Mods:"Mods",Tutoriais:"Tutorials","Notícias":"News","Noticias":"News"};
+function tr(k){return (T[LANG]&&T[LANG][k])||T.pt[k]||k}
+function catT(c){return LANG==="en"?(CATEN[c]||c):c}
+function nmT(it){return LANG==="en"&&it.nome_en?it.nome_en:it.nome}
+function dsT(it){return LANG==="en"&&it.desc_en?it.desc_en:it.desc}
 // 2) EDITE: troque "#" pelo link de download de cada item e adicione os seus.
 var itens = [
-  {nome:"GoldHEN", cat:"Ferramentas", desc:"Carrega homebrew e plugins no PS4 desbloqueado.", url:"#"},
-  {nome:"Apollo Save Tool", cat:"Ferramentas", desc:"Gerencia, exporta e restaura os saves dos seus jogos.", url:"#"},
-  {nome:"Pack de veículos addon para GTA V", cat:"Mods", desc:"Veículos extras instalados pela pasta dlc_addon via FTP.", url:"#"},
-  {nome:"Plugins para GoldHEN", cat:"Plugins", desc:"Coloque aqui os seus plugins e escreva o que cada um faz.", url:"#"},
-  {nome:"Como enviar arquivos pelo FTP", cat:"Tutoriais", desc:"Passo a passo para copiar mods do celular para o console.", url:"#"}
+  {nome:"GoldHEN", cat:"Ferramentas", desc:"Carrega homebrew e plugins no PS4 desbloqueado.", url:"#", nome_en:"GoldHEN", desc_en:"Loads homebrew and plugins on a jailbroken PS4."},
+  {nome:"Apollo Save Tool", cat:"Ferramentas", desc:"Gerencia, exporta e restaura os saves dos seus jogos.", url:"#", nome_en:"Apollo Save Tool", desc_en:"Manage, export and restore your game saves."},
+  {nome:"Pack de veículos addon para GTA V", cat:"Mods", desc:"Veículos extras instalados pela pasta dlc_addon via FTP.", url:"#", nome_en:"Addon vehicle pack for GTA V", desc_en:"Extra vehicles installed through the dlc_addon folder via FTP."},
+  {nome:"Plugins para GoldHEN", cat:"Plugins", desc:"Coloque aqui os seus plugins e escreva o que cada um faz.", url:"#", nome_en:"Plugins for GoldHEN", desc_en:"Put your plugins here and describe what each one does."},
+  {nome:"Como enviar arquivos pelo FTP", cat:"Tutoriais", desc:"Passo a passo para copiar mods do celular para o console.", url:"#", nome_en:"How to send files over FTP", desc_en:"Step by step to copy mods from your phone to the console."}
 ];
 var cores = {Todos:"#E9EEF2",Ferramentas:"#00E5FF",Plugins:"#FF2E88",Mods:"#FFD60A",Tutoriais:"#00FF9C"};
 var atual = "Todos";
@@ -208,12 +234,12 @@ var lista=$("lista"), vazio=$("vazio"), busca=$("busca"), filtros=$("filtros");
 
 Object.keys(cores).forEach(function(c){
   var b=document.createElement("button");
-  b.type="button"; b.className="chip"; b.textContent=c;
+  b.type="button"; b.className="chip"; b.textContent=catT(c); b.dataset.k=c;
   b.style.setProperty("--c",cores[c]);
   b.setAttribute("aria-pressed",c===atual?"true":"false");
   b.addEventListener("click",function(){
     atual=c;
-    Array.prototype.forEach.call(filtros.children,function(x){x.setAttribute("aria-pressed",x.textContent===atual?"true":"false")});
+    Array.prototype.forEach.call(filtros.children,function(x){x.setAttribute("aria-pressed",x.dataset.k===atual?"true":"false")});
     desenhar();
   });
   filtros.appendChild(b);
@@ -228,22 +254,22 @@ function desenhar(){
   var q=busca.value.trim().toLowerCase(); lista.textContent=""; var achou=0;
   itens.concat(window.NOTICIAS||[]).forEach(function(it,i){
     if(atual!=="Todos"&&it.cat!==atual) return;
-    if(q&&(it.nome+" "+it.desc).toLowerCase().indexOf(q)===-1) return;
+    if(q&&(it.nome+" "+it.desc+" "+nmT(it)+" "+dsT(it)).toLowerCase().indexOf(q)===-1) return;
     achou++;
     var li=document.createElement("li"); li.className="item";
     li.style.setProperty("--c",cores[it.cat]||"#00FF9C");
     var h=document.createElement("div"), m=document.createElement("div"); m.className="meta";
-    var c=document.createElement("span"); c.className="cat"; c.textContent=it.cat;
+    var c=document.createElement("span"); c.className="cat"; c.textContent=catT(it.cat);
     var id=document.createElement("span"); id.className="id"; id.textContent="id 0x"+("0"+(i+1)).slice(-2);
     m.appendChild(c); m.appendChild(id);
-    var t=document.createElement("h2"); t.textContent=it.nome; t.className="gl"; t.setAttribute("data-text",it.nome); t.style.setProperty("--d",(-Math.random()*2.7).toFixed(2)+"s");
+    var t=document.createElement("h2"); t.textContent=nmT(it); t.className="gl"; t.setAttribute("data-text",nmT(it)); t.style.setProperty("--d",(-Math.random()*2.7).toFixed(2)+"s");
     h.appendChild(m); h.appendChild(t);
-    var p=document.createElement("p"); p.textContent=it.desc;
-    var a=document.createElement("a"); a.className="btn"; a.textContent="Baixar";
+    var p=document.createElement("p"); p.textContent=dsT(it);
+    var a=document.createElement("a"); a.className="btn"; a.textContent=tr("baixar");
     a.href=/^https?:\/\//i.test(it.url)?it.url:"#"; a.target="_blank"; a.rel="noopener noreferrer";
     a.addEventListener("click",function(e){
-      if(!/^https?:\/\//i.test(it.url)){e.preventDefault(); aviso("link ainda não configurado: "+it.nome)}
-      else aviso("acesso concedido: baixando "+it.nome);
+      if(!/^https?:\/\//i.test(it.url)){e.preventDefault(); aviso(tr("semlink")+nmT(it))}
+      else aviso(tr("baixando")+nmT(it));
     });
     li.appendChild(h); li.appendChild(p); li.appendChild(a); lista.appendChild(li);
   });
@@ -263,7 +289,7 @@ if(CONFIG.URL&&CONFIG.KEY&&window.supabase){
   db=supabase.createClient(CONFIG.URL,CONFIG.KEY);
   db.from("itens").select("*").order("criado",{ascending:false}).then(function(r){
     if(r.data&&r.data.length){
-      itens=r.data.map(function(x){return {nome:x.nome,cat:x.cat,pasta:x.pasta,desc:x.descricao||"",url:x.url}});
+      itens=r.data.map(function(x){return {nome:x.nome,cat:x.cat,pasta:x.pasta,desc:x.descricao||"",url:x.url,nome_en:x.nome_en,desc_en:x.descricao_en}});
       $("qtd").textContent=itens.length+(window.NOTICIAS||[]).length; desenhar();
     }
   });
@@ -379,9 +405,31 @@ window.addEventListener("hashchange",rota); rota();
 function relogio(){var d=new Date();$("relogio").textContent=d.toTimeString().slice(0,8)}
 relogio(); setInterval(relogio,1000);
 
+// ===== troca de idioma =====
+function aplicar(){
+  document.documentElement.lang=LANG==="en"?"en":"pt-BR";
+  document.title=tr("titulo");
+  var md=document.querySelector('meta[name="description"]'); if(md) md.setAttribute("content",tr("meta"));
+  Array.prototype.forEach.call(document.querySelectorAll("[data-i]"),function(el){el.textContent=tr(el.getAttribute("data-i"))});
+  busca.placeholder=tr("busca"); busca.setAttribute("aria-label",tr("busca"));
+  var h=tr("h1"); $("tit").setAttribute("data-text",h); $("tit").querySelector(".dith").textContent=h;
+  $("noti").href="noticias.html?lang="+LANG;
+  Array.prototype.forEach.call(filtros.children,function(x){x.textContent=catT(x.dataset.k)});
+  $("lgb").textContent=LANG==="en"?"PT":"EN";
+  try{localStorage.setItem("lang",LANG)}catch(e){}
+  desenhar();
+}
+function setLang(l){LANG=l;aplicar()}
+function abreLang(){var e=$("lang");e.hidden=false;e.classList.remove("off");$("lang-pt").focus({preventScroll:true})}
+function fechaLang(){var e=$("lang");e.classList.add("off");setTimeout(function(){e.hidden=true},400)}
+$("lgb").onclick=function(){setLang(LANG==="en"?"pt":"en")};
+$("lang-pt").onclick=function(){setLang("pt");fechaLang()};
+$("lang-en").onclick=function(){setLang("en");fechaLang()};
+aplicar();
+
 // tela de boot
 var boot=$("boot");
-function fim(){if(!boot)return; boot.classList.add("off"); var b=boot; boot=null; setTimeout(function(){b.remove()},450)}
+function fim(){if(!boot)return; boot.classList.add("off"); var b=boot; boot=null; setTimeout(function(){b.remove()},450); if(!/^#(admin|setup)$/.test(location.hash)) abreLang()}
 if(window.matchMedia("(prefers-reduced-motion: reduce)").matches||location.hash){fim()}
 else{
   var log=$("bootlog");
