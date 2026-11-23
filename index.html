@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NULL_PS4 · Mods e ferramentas para PS4 desbloqueado</title>
 <meta name="description" content="Baixe ferramentas, plugins, mods e tutoriais para PS4 desbloqueado. Apenas homebrew.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'self' https://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'self' https://*.supabase.co https://api.mymemory.translated.net; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap">
 <noscript><style>#boot{display:none}</style></noscript>
@@ -158,7 +158,7 @@ footer p{margin:0 0 8px;max-width:62ch}
       <label for="link">ou link externo (Mega, MediaFire...)</label><input id="link" type="url" placeholder="https://">
       <button class="bt" id="salvar" type="button">Publicar</button>
     </div>
-    <div class="box"><b>Itens publicados</b><div id="itens"></div></div>
+    <div class="box"><b>Itens publicados</b><div id="itens"></div><button class="bt sec" id="trad" type="button">Traduzir itens para inglês</button></div>
     <button class="bt sec" id="sair" type="button">Sair</button>
   </section>
   <p><a href="#">Voltar ao site</a></p>
@@ -216,9 +216,11 @@ pt:{titulo:"NULL_PS4 · Mods e ferramentas para PS4 desbloqueado",meta:"Baixe fe
 en:{titulo:"NULL_PS4 · Mods and tools for jailbroken PS4",meta:"Download tools, plugins, mods and tutorials for jailbroken PS4. Homebrew only.",conn:"secure connection",h1:"Mods and tools for jailbroken PS4",sub:"Download, install and customize your console. Everything in one place.",noti:"> read the PS4 scene news",sinal:"signal",arq:"files",status:"status",online:"online",busca:"search mods or tools",vazio:"Nothing found. Try another word.",f1:"This site only shares homebrew, tools and mods. We do not host or promote pirated games.",f2:"Use at your own risk: back up your saves before installing anything.",f3:"Fan site, not affiliated with Ubisoft. Watch Dogs and DedSec are trademarks of their owners.",baixar:"Download",semlink:"link not set up yet: ",baixando:"access granted: downloading "}};
 var CATEN={Todos:"All",Ferramentas:"Tools",Plugins:"Plugins",Mods:"Mods",Tutoriais:"Tutorials","Notícias":"News","Noticias":"News"};
 function tr(k){return (T[LANG]&&T[LANG][k])||T.pt[k]||k}
-function catT(c){return LANG==="en"?(CATEN[c]||c):c}
-function nmT(it){return LANG==="en"&&it.nome_en?it.nome_en:it.nome}
-function dsT(it){return LANG==="en"&&it.desc_en?it.desc_en:it.desc}
+var TRAD={};
+function tg(s){return TRAD[(s||"").trim()]}
+function catT(c){return LANG==="en"?(CATEN[c]||tg(c)||c):c}
+function nmT(it){return LANG==="en"?(it.nome_en||tg(it.nome)||it.nome):it.nome}
+function dsT(it){return LANG==="en"?(it.desc_en||tg(it.desc)||it.desc):it.desc}
 // 2) EDITE: troque "#" pelo link de download de cada item e adicione os seus.
 var itens = [
   {nome:"GoldHEN", cat:"Ferramentas", desc:"Carrega homebrew e plugins no PS4 desbloqueado.", url:"#", nome_en:"GoldHEN", desc_en:"Loads homebrew and plugins on a jailbroken PS4."},
@@ -282,6 +284,9 @@ desenhar();
 
 // ===== posts automáticos (notícias) =====
 fetch("posts.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)){window.NOTICIAS=d;$("qtd").textContent=itens.length+d.length;desenhar()}}).catch(function(){});
+
+// ===== traduções automáticas (arquivo gerado pelo GitHub) =====
+fetch("traducoes.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){if(d&&typeof d==="object"){TRAD=d;if(LANG==="en")aplicar()}}).catch(function(){});
 
 // ===== itens do banco (se configurado) =====
 var db=null;
@@ -372,7 +377,10 @@ $("salvar").onclick=function(){
     });
   }else p=Promise.resolve(link);
   p.then(function(url){
-    return db.from("itens").insert({nome:nome,cat:$("cat").value,pasta:pasta,descricao:$("desc").value.trim(),url:url,caminho:caminho});
+    var d=$("desc").value.trim();
+    return Promise.all([traduz(nome),traduz(d)]).then(function(v){
+      return db.from("itens").insert({nome:nome,cat:$("cat").value,pasta:pasta,descricao:d,url:url,caminho:caminho,nome_en:v[0]||null,descricao_en:v[1]||null});
+    });
   }).then(function(r){
     if(r.error) throw r.error;
     msg("Publicado!",true);
@@ -381,12 +389,41 @@ $("salvar").onclick=function(){
   }).catch(erro);
 };
 
+// ===== tradução automática PT -> EN (só no admin; o resultado fica salvo no banco) =====
+function partes(t){var o=[],c="";t.split(/(?<=[.!?])\s+/).forEach(function(s){while(s.length>240){o.push(s.slice(0,240));s=s.slice(240)}if((c+" "+s).length>240){if(c)o.push(c);c=s}else c=c?c+" "+s:s});if(c)o.push(c);return o}
+function traduz(txt){
+  if(!txt) return Promise.resolve("");
+  return Promise.all(partes(txt).map(function(p){
+    return fetch("https://api.mymemory.translated.net/get?langpair=pt-BR%7Cen&q="+encodeURIComponent(p)).then(function(r){return r.json()}).then(function(j){
+      var s=j&&j.responseData&&j.responseData.translatedText;
+      if(!s||Number(j.responseStatus)!==200||/MYMEMORY WARNING|QUERY LENGTH/i.test(s)) throw 0;
+      return s;
+    });
+  })).then(function(a){return a.join(" ")}).catch(function(){return ""});
+}
+$("trad").onclick=function(){
+  msg("Traduzindo...",true);
+  db.from("itens").select("*").then(function(r){
+    if(r.error) throw r.error;
+    var pend=(r.data||[]).filter(function(x){return !x.nome_en||(x.descricao&&!x.descricao_en)}), feitos=0;
+    if(!pend.length){msg("Todos os itens já têm inglês.",true);return}
+    return pend.reduce(function(p,it){
+      return p.then(function(){
+        return Promise.all([traduz(it.nome),traduz(it.descricao||"")]).then(function(v){
+          if(!v[0]) throw new Error("limite diário do tradutor atingido. Tente de novo amanhã.");
+          return db.from("itens").update({nome_en:v[0],descricao_en:v[1]}).eq("id",it.id);
+        }).then(function(u){if(u.error) throw u.error; feitos++; msg("Traduzidos: "+feitos+"/"+pend.length,true)});
+      });
+    },Promise.resolve()).then(function(){msg("Pronto! "+feitos+" itens traduzidos.",true)});
+  }).catch(erro);
+};
+
 // ===== tela #setup: gera o SQL com o seu e-mail =====
 function sqlGerar(){
   var e=($("mail").value.trim()||"SEU_EMAIL@exemplo.com").replace(/'/g,"''");
   $("sql").textContent=[
 "create or replace function public.is_admin() returns boolean language sql stable as $$ select lower(auth.jwt()->>'email')=lower('"+e+"') and (auth.jwt()->>'aal')='aal2' $$;",
-"create table if not exists public.itens (id bigint generated always as identity primary key, nome text not null, cat text not null, pasta text, descricao text, url text not null check (url ~* '^https?://'), caminho text, criado timestamptz default now());",
+"create table if not exists public.itens (id bigint generated always as identity primary key, nome text not null, cat text not null, pasta text, descricao text, nome_en text, descricao_en text, url text not null check (url ~* '^https?://'), caminho text, criado timestamptz default now());",
 "alter table public.itens enable row level security;",
 "create policy \"todos leem\" on public.itens for select using (true);",
 "create policy \"admin escreve\" on public.itens for all using (public.is_admin()) with check (public.is_admin());",
