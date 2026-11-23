@@ -2,7 +2,9 @@ name: Traduzir para inglês
 
 on:
   push:
-    paths: ["**/posts.json"]
+    paths:
+      - "_posts/**"
+      - "**/posts.json"
   schedule:
     - cron: "10 13,18,21 * * *"
   workflow_dispatch:
@@ -32,31 +34,64 @@ jobs:
           const fs = require("fs");
           const E = process.env.MYMEMORY_EMAIL || "";
 
-          function acha(d, o) {
+          function listar(d, o) {
+            if (!fs.existsSync(d)) return o;
             for (const n of fs.readdirSync(d, { withFileTypes: true })) {
               if (n.name === ".git" || n.name === "node_modules") continue;
               const p = d === "." ? n.name : d + "/" + n.name;
-              if (n.isFile() && n.name === "posts.json") o.push(p);
-              else if (n.isDirectory()) acha(p, o);
+              if (n.isFile()) o.push(p);
+              else if (n.isDirectory()) listar(p, o);
             }
             return o;
           }
 
-          const fl = acha(".", []);
-          console.log("posts.json encontrados:", fl.join(", ") || "nenhum");
+          const todos = listar(".", []);
+          const alvos = todos.filter(
+            p => p.startsWith("_posts/") || p === "posts.json" || p.endsWith("/posts.json")
+          );
 
-          let posts = [];
-          for (const f of fl) {
-            try {
-              const a = JSON.parse(fs.readFileSync(f, "utf8"));
-              if (Array.isArray(a)) posts = posts.concat(a);
-            } catch (e) {
-              console.log("inválido:", f);
+          console.log("Arquivos encontrados:", alvos.join(", ") || "nenhum");
+
+          const ts = new Set();
+          const campos = ["nome", "desc", "cat", "titulo", "descricao", "categoria", "title", "description", "category"];
+
+          function extrairObjeto(obj) {
+            if (!obj || typeof obj !== "object") return;
+            if (Array.isArray(obj)) {
+              obj.forEach(extrairObjeto);
+              return;
+            }
+            for (const k of campos) {
+              if (typeof obj[k] === "string" && obj[k].trim()) {
+                ts.add(obj[k].trim());
+              }
             }
           }
 
-          if (!posts.length) {
-            console.log("nenhum post para traduzir");
+          for (const f of alvos) {
+            const raw = fs.readFileSync(f, "utf8");
+            if (f.endsWith(".json")) {
+              try {
+                extrairObjeto(JSON.parse(raw));
+              } catch (e) {
+                console.log("JSON inválido:", f);
+              }
+            } else if (f.endsWith(".md") || f.endsWith(".markdown")) {
+              const fm = raw.match(/^---\s*\n([\s\S]*?)\n---/);
+              if (fm) {
+                for (const linha of fm[1].split("\n")) {
+                  const m = linha.match(/^([a-zA-Z0-9_-]+)\s*:\s*(.+)$/);
+                  if (m && campos.includes(m[1].toLowerCase())) {
+                    const val = m[2].trim().replace(/^["']|["']$/g, "");
+                    if (val) ts.add(val);
+                  }
+                }
+              }
+            }
+          }
+
+          if (!ts.size) {
+            console.log("Nenhum texto encontrado para traduzir");
             process.exit(0);
           }
 
@@ -64,13 +99,6 @@ jobs:
           try {
             cache = JSON.parse(fs.readFileSync("traducoes.json", "utf8"));
           } catch (e) {}
-
-          const ts = new Set();
-          posts.forEach(p =>
-            ["nome", "desc", "cat"].forEach(k => {
-              if (p && typeof p[k] === "string" && p[k].trim()) ts.add(p[k].trim());
-            })
-          );
 
           function partes(t) {
             const o = [];
@@ -148,7 +176,9 @@ jobs:
         run: |
           git config user.name "tradutor"
           git config user.email "tradutor@users.noreply.github.com"
-          if [ -f traducoes.json ]; then git add traducoes.json; fi
+          if [ -f traducoes.json ]; then
+            git add traducoes.json
+          fi
           if ! git diff --cached --quiet; then
             git commit -m "Atualiza traduções"
             git pull --rebase
