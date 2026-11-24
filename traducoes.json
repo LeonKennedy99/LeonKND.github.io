@@ -214,5 +214,18 @@
  "Nova camada de compatibilidade/emulador lançada para PS4.": "New compatibility layer/emulator released for PS4.",
  "Playfin v2.3.1: Player de Mídia Avançado recebe Update de Estabilidade": "Playfin v2.3.1: Advanced Media Player Receives Stability Update",
  "Update do player de mídia nativo focado em performance.": "Update to the native media player focused on performance.",
- "PPPwn_cpp v1.1.0: Exploit em C++ mais Rápido e Estável": "PPPwn_cpp v1.1.0: Faster and More Stable C++ Exploit"
+ "PPPwn_cpp v1.1.0: Exploit em C++ mais Rápido e Estável": "PPPwn_cpp v1.1.0: Faster and More Stable C++ Exploit",
+ "Versão reescrita em C++ do exploit PPPwn traz velocidade superior ao Python.": "The rewritten C++ version of the PPPwn exploit offers superior speed compared to Python.",
+ "PPPwn_cpp v1.2.0: Maior Taxa de Sucesso no Jailbreak do Firmware 11.00": "PPPwn_cpp v1.2.0: Higher Jailbreak Success Rate for Firmware 11.00",
+ "A implementação em C++ do exploit PPPwn ficou ainda mais rápida e confiável.": "The C++ implementation of the PPPwn exploit has become even faster and more reliable.",
+ "PS4 Temperature v1.07: Suporte para Firmware 11.00 e Correções": "PS4 Temperature v1.07: Support for Firmware 11.00 and Fixes",
+ "Monitor de temperatura de Lapy recebe atualização para novos firmwares.": "Lapy temperature monitor receives update for new firmware versions.",
+ "PS4 Temperature v1.08: Notificações em Tempo Real e Ajustes de Kernel": "PS4 Temperature v1.08: Real-Time Notifications and Kernel Adjustments",
+ "Mantenha a saúde térmica do seu console sob controle com a nova versão do monitor de temperatura.": "Keep your console’s thermal health under control with the new version of the temperature monitor.",
+ "PS4-Xplorer 2.0 v2.09: Atualização com Melhorias de UI": "PS4-Xplorer 2.0 v2.09: Update with UI Improvements",
+ "Gerenciador de arquivos recebe ajustes visuais e maior rapidez na leitura USB.": "The file manager gets visual tweaks and faster USB read speeds.",
+ "PS4-Xplorer 2.0 v2.10: Correção na Busca e Estabilidade": "PS4-Xplorer 2.0 v2.10: Search and Stability Fix",
+ "O melhor gerenciador de arquivos do PS4 recebe correções importantes na busca.": "The best PS4 file manager gets major search fixes.",
+ "SuperTuxKart v0.10.0: Corrida estilo Kart chega ao PS4": "SuperTuxKart v0.10.0: Kart-style racing comes to PS4",
+ "Port oficial do famoso jogo de corrida open-source para o PS4.": "Official port of the famous open-source racing game for PS4."
 }
