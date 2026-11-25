@@ -486,6 +486,22 @@
  "Automatize o jailbreak do seu PS4 11.00 usando uma placa ESP32-S3 barata e eficiente.": "Automate the jailbreak of your PS4 11.00 using an inexpensive and efficient ESP32-S3 board.",
  "Tutorial: Como transferir arquivos via FTP usando o PS4-Xplorer 2.0": "Tutorial: How to transfer files via FTP using PS4-Xplorer 2.0",
  "Use o servidor FTP integrado do PS4-Xplorer 2.0 para enviar arquivos do PC para o PS4 sem cabos.": "Use the built-in FTP server of PS4-Xplorer 2.0 to send files from your PC to your PS4 without cables.",
+ "Apollo Save Tool v1.5.0: Suporte Expandido para Exportação de Saves": "Apollo Save Tool v1.5.0: Expanded Support for Save Export",
+ "Nova versão da ferramenta de gerenciamento de saves traz melhorias de compatibilidade.": "The new version of the save management tool offers compatibility improvements.",
+ "Bully: Extended Script Menu v2.0 - Novo Mod de Gameplay para PS4": "Bully: Extended Script Menu v2.0 - New Gameplay Mod for PS4",
+ "Menu de scripts avançado para o clássico Bully no PS4 ganha grandes adições.": "The advanced script menu for the classic Bully on PS4 gets major additions.",
+ "GoldHEN Cheat Manager v1.2.9: Novos Bancos de Dados e Melhorias na UI": "GoldHEN Cheat Manager v1.2.9: New Databases and UI Improvements",
+ "Gerenciador de cheats recebe atualização com suporte para centenas de novos jogos.": "Cheat manager gets an update with support for hundreds of new games.",
+ "PPPwn-Android v1.7: Suporte para Novos Estágios e Exploit Mais Rápido": "PPPwn-Android v1.7: Support for New Stages and Faster Exploit",
+ "Execute o exploit PPPwn (FW 11.00) usando seu smartphone Android com maior taxa de sucesso.": "Run the PPPwn exploit (FW 11.00) using your Android smartphone with a higher success rate.",
  "PS4-Store v4.21: Melhorias na Estabilidade e Novos Repositórios": "PS4-Store v4.21: Stability Improvements and New Repositories",
- "A principal loja de homebrews do PS4 recebe atualização com correções e novos recursos.": "The leading PS4 homebrew store gets an update with fixes and new features."
+ "A principal loja de homebrews do PS4 recebe atualização com correções e novos recursos.": "The leading PS4 homebrew store gets an update with fixes and new features.",
+ "PS4-Xplorer 2.0 v2.17: Edição de Texto e Novos Atalhos": "PS4-Xplorer 2.0 v2.17: Text Editing and New Shortcuts",
+ "O gerenciador de arquivos padrão da cena PS4 está ainda mais funcional.": "The default file manager for the PS4 scene is even more functional.",
+ "Tutorial: Como bloquear atualizações automáticas de sistema no PS4 desbloqueado": "Tutorial: How to block automatic system updates on an unlocked PS4",
+ "Proteja seu jailbreak desativando permanentemente os downloads de novos firmwares da Sony.": "Protect your jailbreak by permanently disabling downloads of new Sony firmware.",
+ "Tutorial: Como configurar o PPPwn no Raspberry Pi para desbloqueio automático": "Tutorial: How to set up PPPwn on Raspberry Pi for automatic unlocking",
+ "Automatize o exploit do seu PS4 usando um Raspberry Pi com a versão C++ de alto desempenho.": "Automate your PS4 exploit using a Raspberry Pi with the high-performance C++ version.",
+ "Tutorial: Como usar o PS4 Cheater no PC para criar e buscar cheats": "Tutorial: How to use PS4 Cheater on PC to create and search for cheats",
+ "Aprenda a buscar e editar valores de jogos (vida, dinheiro, munição) em tempo real via rede.": "Learn how to search for and edit game values (lives, money, ammo) in real time over a network."
 }
