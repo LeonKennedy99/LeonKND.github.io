@@ -485,5 +485,7 @@
  "Tutorial: Como configurar o PPPwn em um microcontrolador ESP32-S3": "Tutorial: How to set up PPPwn on an ESP32-S3 microcontroller",
  "Automatize o jailbreak do seu PS4 11.00 usando uma placa ESP32-S3 barata e eficiente.": "Automate the jailbreak of your PS4 11.00 using an inexpensive and efficient ESP32-S3 board.",
  "Tutorial: Como transferir arquivos via FTP usando o PS4-Xplorer 2.0": "Tutorial: How to transfer files via FTP using PS4-Xplorer 2.0",
- "Use o servidor FTP integrado do PS4-Xplorer 2.0 para enviar arquivos do PC para o PS4 sem cabos.": "Use the built-in FTP server of PS4-Xplorer 2.0 to send files from your PC to your PS4 without cables."
+ "Use o servidor FTP integrado do PS4-Xplorer 2.0 para enviar arquivos do PC para o PS4 sem cabos.": "Use the built-in FTP server of PS4-Xplorer 2.0 to send files from your PC to your PS4 without cables.",
+ "PS4-Store v4.21: Melhorias na Estabilidade e Novos Repositórios": "PS4-Store v4.21: Stability Improvements and New Repositories",
+ "A principal loja de homebrews do PS4 recebe atualização com correções e novos recursos.": "The leading PS4 homebrew store gets an update with fixes and new features."
 }
