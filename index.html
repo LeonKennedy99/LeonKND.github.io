@@ -158,7 +158,7 @@ footer p{margin:0 0 8px;max-width:62ch}
       <label for="link">ou link externo (Mega, MediaFire...)</label><input id="link" type="url" placeholder="https://">
       <button class="bt" id="salvar" type="button">Publicar</button>
     </div>
-    <div class="box"><b>Itens publicados</b><div id="itens"></div><button class="bt sec" id="trad" type="button">Traduzir itens para inglês</button></div>
+    <div class="box"><b>Itens publicados</b><div id="itens"></div><button class="bt sec" id="trad" type="button" hidden>Traduzir itens para inglês</button></div>
     <button class="bt sec" id="sair" type="button">Sair</button>
   </section>
   <p><a href="#">Voltar ao site</a></p>
@@ -212,15 +212,51 @@ var CONFIG={URL:"https://tdddygqvmvncnhrkmpvv.supabase.co",KEY:"sb_publishable_W
 // ===== idioma (pt/en) =====
 var LANG="pt"; try{if(localStorage.getItem("lang")==="en")LANG="en"}catch(e){}
 var T={
-pt:{titulo:"NULL_PS4 · Mods e ferramentas para PS4 desbloqueado",meta:"Baixe ferramentas, plugins, mods e tutoriais para PS4 desbloqueado. Apenas homebrew.",conn:"conexão segura",h1:"Mods e ferramentas para PS4 desbloqueado",sub:"Baixe, instale e personalize seu console. Tudo em um só lugar.",noti:"> ler as notícias da cena PS4",sinal:"sinal",arq:"arquivos",status:"status",online:"online",busca:"buscar mod ou ferramenta",vazio:"Nada encontrado. Tente outra palavra.",f1:"Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.",f2:"Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.",f3:"Site de fã, sem ligação com a Ubisoft. Watch Dogs e DedSec são marcas dos seus donos.",baixar:"Baixar",semlink:"link ainda não configurado: ",baixando:"acesso concedido: baixando "},
-en:{titulo:"NULL_PS4 · Mods and tools for jailbroken PS4",meta:"Download tools, plugins, mods and tutorials for jailbroken PS4. Homebrew only.",conn:"secure connection",h1:"Mods and tools for jailbroken PS4",sub:"Download, install and customize your console. Everything in one place.",noti:"> read the PS4 scene news",sinal:"signal",arq:"files",status:"status",online:"online",busca:"search mods or tools",vazio:"Nothing found. Try another word.",f1:"This site only shares homebrew, tools and mods. We do not host or promote pirated games.",f2:"Use at your own risk: back up your saves before installing anything.",f3:"Fan site, not affiliated with Ubisoft. Watch Dogs and DedSec are trademarks of their owners.",baixar:"Download",semlink:"link not set up yet: ",baixando:"access granted: downloading "}};
+pt:{titulo:"NULL_PS4 · Mods e ferramentas para PS4 desbloqueado",meta:"Baixe ferramentas, plugins, mods e tutoriais para PS4 desbloqueado. Apenas homebrew.",conn:"conexão segura",h1:"Mods e ferramentas para PS4 desbloqueado",sub:"Baixe, instale e personalize seu console. Tudo em um só lugar.",noti:"> ler as notícias da cena PS4",sinal:"sinal",arq:"arquivos",status:"status",online:"online",busca:"buscar mod ou ferramenta",vazio:"Nada encontrado. Tente outra palavra.",f1:"Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.",f2:"Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.",f3:"Site de fã, sem ligação com a Ubisoft. Watch Dogs e DedSec são marcas dos seus donos.",baixar:"Baixar",semlink:"link ainda não configurado: ",baixando:"acesso concedido: baixando ",traduzindo:"traduzindo automaticamente..."},
+en:{titulo:"NULL_PS4 · Mods and tools for jailbroken PS4",meta:"Download tools, plugins, mods and tutorials for jailbroken PS4. Homebrew only.",conn:"secure connection",h1:"Mods and tools for jailbroken PS4",sub:"Download, install and customize your console. Everything in one place.",noti:"> read the PS4 scene news",sinal:"signal",arq:"files",status:"status",online:"online",busca:"search mods or tools",vazio:"Nothing found. Try another word.",f1:"This site only shares homebrew, tools and mods. We do not host or promote pirated games.",f2:"Use at your own risk: back up your saves before installing anything.",f3:"Fan site, not affiliated with Ubisoft. Watch Dogs and DedSec are trademarks of their owners.",baixar:"Download",semlink:"link not set up yet: ",baixando:"access granted: downloading ",traduzindo:"translating automatically..."}};
 var CATEN={Todos:"All",Ferramentas:"Tools",Plugins:"Plugins",Mods:"Mods",Tutoriais:"Tutorials","Notícias":"News","Noticias":"News"};
 function tr(k){return (T[LANG]&&T[LANG][k])||T.pt[k]||k}
-var TRAD={};
-function tg(s){return TRAD[(s||"").trim()]}
-function catT(c){return LANG==="en"?(CATEN[c]||tg(c)||c):c}
-function nmT(it){return LANG==="en"?(it.nome_en||tg(it.nome)||it.nome):it.nome}
-function dsT(it){return LANG==="en"?(it.desc_en||tg(it.desc)||it.desc):it.desc}
+// Tradução automática no navegador: usa o inglês já salvo e, se faltar, traduz sozinho e guarda no aparelho.
+var TRAD={}, TRC={}, trFila=[], trOn=false, trAtual=null, trAviso=false, trTimer=null;
+try{TRC=JSON.parse(localStorage.getItem("trc")||"{}")}catch(e){}
+function tg(s){var k=(s||"").trim();return TRAD[k]||TRC[k]}
+function trParado(){try{return localStorage.getItem("trstop")===new Date().toDateString()}catch(e){return false}}
+function trPartes(t){var o=[],c="";t.split(/(?<=[.!?])\s+/).forEach(function(s){while(s.length>240){o.push(s.slice(0,240));s=s.slice(240)}if((c+" "+s).length>240){if(c)o.push(c);c=s}else c=c?c+" "+s:s});if(c)o.push(c);return o}
+function trDec(s){return s.replace(/&#(\d+);/g,function(m,n){return String.fromCharCode(n)}).replace(/&quot;/g,'"').replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&")}
+function trUm(p){
+  return fetch("https://api.mymemory.translated.net/get?langpair=pt-BR%7Cen&q="+encodeURIComponent(p)).then(function(r){return r.json()}).then(function(j){
+    var s=j&&j.responseData&&j.responseData.translatedText;
+    if(!s||Number(j.responseStatus)!==200||/MYMEMORY WARNING|QUERY LENGTH/i.test(s)) throw new Error("lim");
+    return trDec(s);
+  });
+}
+function trFaz(txt){return trPartes(txt).reduce(function(p,x){return p.then(function(a){return trUm(x).then(function(s){a.push(s);return a})})},Promise.resolve([])).then(function(a){return a.join(" ")})}
+function trRoda(){
+  if(trOn||!trFila.length) return;
+  trOn=true; trAtual=trFila.shift(); var k=trAtual;
+  trFaz(k).then(function(s){
+    TRC[k]=s; try{localStorage.setItem("trc",JSON.stringify(TRC))}catch(e){}
+    clearTimeout(trTimer); trTimer=setTimeout(function(){if(LANG==="en")desenhar()},1200);
+  }).catch(function(){
+    trFila=[]; try{localStorage.setItem("trstop",new Date().toDateString())}catch(e){}
+  }).then(function(){trOn=false;trAtual=null;setTimeout(trRoda,250)});
+}
+function trPede(k){
+  if(trParado()||k===trAtual||trFila.indexOf(k)>-1) return;
+  trFila.push(k);
+  if(!trAviso){trAviso=true;aviso(tr("traduzindo"))}
+  trRoda();
+}
+function enT(txt,pre){
+  if(!txt) return txt;
+  if(pre) return pre;
+  var k=String(txt).trim(), a=tg(k);
+  if(a) return a;
+  trPede(k); return txt;
+}
+function catT(c){return LANG==="en"?(CATEN[c]||enT(c)):c}
+function nmT(it){return LANG==="en"?enT(it.nome,it.nome_en):it.nome}
+function dsT(it){return LANG==="en"?enT(it.desc,it.desc_en):it.desc}
 // 2) EDITE: troque "#" pelo link de download de cada item e adicione os seus.
 var itens = [
   {nome:"GoldHEN", cat:"Ferramentas", desc:"Carrega homebrew e plugins no PS4 desbloqueado.", url:"#", nome_en:"GoldHEN", desc_en:"Loads homebrew and plugins on a jailbroken PS4."},
@@ -379,7 +415,11 @@ $("salvar").onclick=function(){
   p.then(function(url){
     var d=$("desc").value.trim();
     return Promise.all([traduz(nome),traduz(d)]).then(function(v){
-      return db.from("itens").insert({nome:nome,cat:$("cat").value,pasta:pasta,descricao:d,url:url,caminho:caminho,nome_en:v[0]||null,descricao_en:v[1]||null});
+      var base={nome:nome,cat:$("cat").value,pasta:pasta,descricao:d,url:url,caminho:caminho};
+      return db.from("itens").insert(Object.assign({nome_en:v[0]||null,descricao_en:v[1]||null},base)).then(function(r){
+        if(r.error&&/nome_en|descricao_en/.test(r.error.message)) return db.from("itens").insert(base);
+        return r;
+      });
     });
   }).then(function(r){
     if(r.error) throw r.error;
