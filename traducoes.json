@@ -604,6 +604,10 @@
  "Recupere consoles e faça diagnósticos avançados de hardware usando Arduino.": "Recover consoles and perform advanced hardware diagnostics using Arduino.",
  "Bully: Project Remastered v1.2 - Melhorias de Sombras e Distância de Visão": "Bully: Project Remastered v1.2 - Shadow and Viewing Distance Improvements",
  "Mod foca em correções técnicas e fidelidade visual para Bully no PS4.": "The mod focuses on technical fixes and visual fidelity for Bully on PS4.",
+ "Tutorial: Como configurar o NanoDNS no GoldHEN para bloquear atualizações do sistema": "Tutorial: How to configure NanoDNS in GoldHEN to block system updates",
+ "Use este payload para criar uma barreira local contra servidores da Sony e evitar atualizações acidentais.": "Use this payload to create a local barrier against Sony servers and prevent accidental updates.",
+ "Tutorial: Como proteger jogos e aplicativos com senha usando o PS4 App Lock": "Tutorial: How to password-protect games and apps using the PS4 App Lock",
+ "Adicione uma camada de segurança ao seu console bloqueando o acesso a apps específicos com um PIN personalizado.": "Add a layer of security to your console by blocking access to specific apps with a custom PIN.",
  "Tutorial: Como usar o PS MTP Explorer para transferir arquivos e instalar PKGs via celular": "Tutorial: How to use PS MTP Explorer to transfer files and install PKGs via mobile phone",
  "Aprenda a conectar seu Android ao PS4 via USB para gerenciar arquivos sem precisar de FTP ou pendrives.": "Learn how to connect your Android device to your PS4 via USB to manage files without needing FTP or USB flash drives.",
  "GoldHEN Plugin: Virtual Trophy (VTR) v1.0 Disponível": "GoldHEN Plugin: Virtual Trophy (VTR) v1.0 Available",
@@ -614,6 +618,8 @@
  "Homebrew de segurança permite bloquear apps e jogos específicos com um PIN.": "The security tweak Homebrew lets you lock specific apps and games with a PIN.",
  "PS4 PKG Tool v1.7.5: Gerenciamento Avançado de Arquivos no PC": "PS4 PKG Tool v1.7.5: Advanced File Management on PC",
  "Atualização traz suporte a novos formatos de metadados e renomeação em massa.": "The update adds support for new metadata formats and bulk renaming.",
+ "PS4-Xplorer 2.0 v2.20: Suporte para Temas Dinâmicos e Melhorias no Gerenciador": "PS4-Xplorer 2.0 v2.20: Support for Dynamic Themes and Improvements to the Manager",
+ "Nova atualização do explorador de arquivos mais popular do PS4 traz estabilidade e customização.": "The new update to the most popular PS4 file explorer brings stability and customization.",
  "Tutorial: Como Proteger Apps e Jogos com Senha usando o PS4-Lock": "Tutorial: How to Password-Protect Apps and Games Using PS4-Lock",
  "Passo a passo para configurar o bloqueio por PIN em seu console desbloqueado.": "Step-by-step instructions for setting up PIN lock on your unlocked console."
 }
