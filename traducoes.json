@@ -602,6 +602,18 @@
  "Aprenda a instalar arquivos PKG via rede sem precisar de HD Externo.": "Learn how to install PKG files over a network without needing an external hard drive.",
  "Tutorial: Como usar o PS4 Syscon Tool com Arduino para Diagnóstico de Hardware": "Tutorial: How to Use the PS4 Syscon Tool with Arduino for Hardware Diagnostics",
  "Recupere consoles e faça diagnósticos avançados de hardware usando Arduino.": "Recover consoles and perform advanced hardware diagnostics using Arduino.",
+ "Bully: Project Remastered v1.2 - Melhorias de Sombras e Distância de Visão": "Bully: Project Remastered v1.2 - Shadow and Viewing Distance Improvements",
+ "Mod foca em correções técnicas e fidelidade visual para Bully no PS4.": "The mod focuses on technical fixes and visual fidelity for Bully on PS4.",
+ "Tutorial: Como usar o PS MTP Explorer para transferir arquivos e instalar PKGs via celular": "Tutorial: How to use PS MTP Explorer to transfer files and install PKGs via mobile phone",
+ "Aprenda a conectar seu Android ao PS4 via USB para gerenciar arquivos sem precisar de FTP ou pendrives.": "Learn how to connect your Android device to your PS4 via USB to manage files without needing FTP or USB flash drives.",
+ "GoldHEN Plugin: Virtual Trophy (VTR) v1.0 Disponível": "GoldHEN Plugin: Virtual Trophy (VTR) v1.0 Available",
+ "Novo plugin oficial permite gerenciar e visualizar troféus customizados no PS4.": "New official plugin allows you to manage and view custom trophies on PS4.",
  "PPPwn-Go v1.0.2: Exploit em Go para FW 11.00 com Melhoria de Performance": "PPPwn-Go v1.0.2: Go Exploit for FW 11.00 with Performance Improvement",
- "Nova implementação do exploit PPPwn em linguagem Go focada em estabilidade.": "New implementation of the PPPwn exploit in Go language, focused on stability."
+ "Nova implementação do exploit PPPwn em linguagem Go focada em estabilidade.": "New implementation of the PPPwn exploit in Go language, focused on stability.",
+ "PS4-Lock v1.0.1: Proteja Seus Aplicativos com Senha": "PS4-Lock v1.0.1: Protect Your Apps with a Password",
+ "Homebrew de segurança permite bloquear apps e jogos específicos com um PIN.": "The security tweak Homebrew lets you lock specific apps and games with a PIN.",
+ "PS4 PKG Tool v1.7.5: Gerenciamento Avançado de Arquivos no PC": "PS4 PKG Tool v1.7.5: Advanced File Management on PC",
+ "Atualização traz suporte a novos formatos de metadados e renomeação em massa.": "The update adds support for new metadata formats and bulk renaming.",
+ "Tutorial: Como Proteger Apps e Jogos com Senha usando o PS4-Lock": "Tutorial: How to Password-Protect Apps and Games Using PS4-Lock",
+ "Passo a passo para configurar o bloqueio por PIN em seu console desbloqueado.": "Step-by-step instructions for setting up PIN lock on your unlocked console."
 }
