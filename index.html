@@ -122,12 +122,25 @@ footer p{margin:0 0 8px;max-width:62ch}
 #qr{display:block;max-width:100%;height:auto;margin:0 auto;border-radius:8px}
 #pixkey{user-select:all;-webkit-user-select:all}
 @media (max-width:480px){.stat [data-i="conn"]{display:none}}
+#dlp{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:24px}
+.dlc{width:100%;max-width:360px;background:#0b0e12;border:1px solid var(--accent);border-radius:16px;padding:20px}
+.dlc h3{margin:0 0 6px;color:var(--accent);font-size:1.15rem}
+.dlc p{margin:0 0 10px;color:var(--muted);font-size:.9rem}
+.dlc .bt{display:block;width:100%;text-align:center;text-decoration:none}
 </style>
 </head>
 <body>
 <div id="boot"><div class="bootbox"><pre id="bootlog"></pre><div class="bar"><i></i></div><div class="skip">toque para pular</div></div></div>
 <div class="bg" role="img" aria-label="Fundo com caveira encapuzada em estilo pixelado"></div>
 <div id="toasts" aria-live="polite"></div>
+
+<div id="dlp" hidden role="dialog" aria-modal="true" aria-labelledby="dlp-t"><div class="dlc">
+  <h3 id="dlp-t" data-i="dlT">Gostou do projeto?</h3>
+  <p id="dlNome" style="color:var(--ink);font-weight:700"></p>
+  <p data-i="dlP">Este site é gratuito e mantido por uma pessoa. Uma doação ajuda o projeto a continuar no ar.</p>
+  <button class="bt" id="dlDoar" type="button" data-i="dlD">Doar</button>
+  <a class="bt sec" id="dlGo" href="#" target="_blank" rel="noopener noreferrer" data-i="dlN">Agora não, baixar</a>
+</div></div>
 
 <div id="doa" class="view" hidden role="dialog" aria-modal="true" aria-labelledby="doa-t"><div class="vin">
   <h2 id="doa-t" data-i="doaT">Doações</h2>
@@ -140,6 +153,7 @@ footer p{margin:0 0 8px;max-width:62ch}
     <div id="qrw" style="margin-top:16px" hidden><canvas id="qr" width="1" height="1" aria-label="QR Code Pix"></canvas></div>
   </div>
   <p data-i="doaN">Doação voluntária. Obrigado pelo apoio!</p>
+  <a class="bt sec" id="doaGo" href="#" target="_blank" rel="noopener noreferrer" hidden data-i="doaG" style="text-align:center;text-decoration:none">Continuar para o download</a>
   <button class="bt sec" id="doaX" type="button" data-i="doaX">Fechar</button>
 </div></div>
 
@@ -232,8 +246,8 @@ var CONFIG={URL:"https://tdddygqvmvncnhrkmpvv.supabase.co",KEY:"sb_publishable_W
 // ===== idioma (pt/en) =====
 var LANG="pt"; try{if(localStorage.getItem("lang")==="en")LANG="en"}catch(e){}
 var T={
-pt:{titulo:"NULL_PS4 · Mods e ferramentas para PS4 desbloqueado",meta:"Baixe ferramentas, plugins, mods e tutoriais para PS4 desbloqueado. Apenas homebrew.",conn:"conexão segura",h1:"Mods e ferramentas para PS4 desbloqueado",sub:"Baixe, instale e personalize seu console. Tudo em um só lugar.",noti:"> ler as notícias da cena PS4",sinal:"sinal",arq:"arquivos",status:"status",online:"online",busca:"buscar mod ou ferramenta",vazio:"Nada encontrado. Tente outra palavra.",f1:"Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.",f2:"Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.",f3:"Site de fã, sem ligação com a Ubisoft. Watch Dogs e DedSec são marcas dos seus donos.",baixar:"Baixar",semlink:"link ainda não configurado: ",baixando:"acesso concedido: baixando ",traduzindo:"traduzindo automaticamente...",doar:"Doações",doaT:"Doações",doaP:"Este site é gratuito e mantido por uma pessoa. Se ele te ajudou, considere fazer uma doação pelo Pix para ajudar a manter o site no ar.",doaL:"Chave Pix (aleatória)",doaK:"Copiar chave Pix",doaC:"Copiar Pix copia e cola",doaN:"Doação voluntária. Obrigado pelo apoio!",doaX:"Fechar",copiado:"copiado!",selec:"chave selecionada, copie manualmente"},
-en:{titulo:"NULL_PS4 · Mods and tools for jailbroken PS4",meta:"Download tools, plugins, mods and tutorials for jailbroken PS4. Homebrew only.",conn:"secure connection",h1:"Mods and tools for jailbroken PS4",sub:"Download, install and customize your console. Everything in one place.",noti:"> read the PS4 scene news",sinal:"signal",arq:"files",status:"status",online:"online",busca:"search mods or tools",vazio:"Nothing found. Try another word.",f1:"This site only shares homebrew, tools and mods. We do not host or promote pirated games.",f2:"Use at your own risk: back up your saves before installing anything.",f3:"Fan site, not affiliated with Ubisoft. Watch Dogs and DedSec are trademarks of their owners.",baixar:"Download",semlink:"link not set up yet: ",baixando:"access granted: downloading ",traduzindo:"translating automatically...",doar:"Donate",doaT:"Donations",doaP:"This site is free and run by one person. If it helped you, consider donating via Pix to help keep it online.",doaL:"Pix key (random)",doaK:"Copy Pix key",doaC:"Copy Pix copy-and-paste code",doaN:"Voluntary donation. Pix is a Brazilian payment method and needs a Brazilian bank account. Thank you for the support!",doaX:"Close",copiado:"copied!",selec:"key selected, copy it manually"}};
+pt:{titulo:"NULL_PS4 · Mods e ferramentas para PS4 desbloqueado",meta:"Baixe ferramentas, plugins, mods e tutoriais para PS4 desbloqueado. Apenas homebrew.",conn:"conexão segura",h1:"Mods e ferramentas para PS4 desbloqueado",sub:"Baixe, instale e personalize seu console. Tudo em um só lugar.",noti:"> ler as notícias da cena PS4",sinal:"sinal",arq:"arquivos",status:"status",online:"online",busca:"buscar mod ou ferramenta",vazio:"Nada encontrado. Tente outra palavra.",f1:"Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.",f2:"Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.",f3:"Site de fã, sem ligação com a Ubisoft. Watch Dogs e DedSec são marcas dos seus donos.",baixar:"Baixar",semlink:"link ainda não configurado: ",baixando:"acesso concedido: baixando ",traduzindo:"traduzindo automaticamente...",doar:"Doações",doaT:"Doações",doaP:"Este site é gratuito e mantido por uma pessoa. Se ele te ajudou, considere fazer uma doação pelo Pix para ajudar a manter o site no ar.",doaL:"Chave Pix (aleatória)",doaK:"Copiar chave Pix",doaC:"Copiar Pix copia e cola",doaN:"Doação voluntária. Obrigado pelo apoio!",doaX:"Fechar",copiado:"copiado!",selec:"chave selecionada, copie manualmente",dlT:"Gostou do projeto?",dlP:"Este site é gratuito e mantido por uma pessoa. Uma doação ajuda o projeto a continuar no ar.",dlD:"Doar",dlN:"Agora não, baixar",doaG:"Continuar para o download"},
+en:{titulo:"NULL_PS4 · Mods and tools for jailbroken PS4",meta:"Download tools, plugins, mods and tutorials for jailbroken PS4. Homebrew only.",conn:"secure connection",h1:"Mods and tools for jailbroken PS4",sub:"Download, install and customize your console. Everything in one place.",noti:"> read the PS4 scene news",sinal:"signal",arq:"files",status:"status",online:"online",busca:"search mods or tools",vazio:"Nothing found. Try another word.",f1:"This site only shares homebrew, tools and mods. We do not host or promote pirated games.",f2:"Use at your own risk: back up your saves before installing anything.",f3:"Fan site, not affiliated with Ubisoft. Watch Dogs and DedSec are trademarks of their owners.",baixar:"Download",semlink:"link not set up yet: ",baixando:"access granted: downloading ",traduzindo:"translating automatically...",doar:"Donate",doaT:"Donations",doaP:"This site is free and run by one person. If it helped you, consider donating via Pix to help keep it online.",doaL:"Pix key (random)",doaK:"Copy Pix key",doaC:"Copy Pix copy-and-paste code",doaN:"Voluntary donation. Pix is a Brazilian payment method and needs a Brazilian bank account. Thank you for the support!",doaX:"Close",copiado:"copied!",selec:"key selected, copy it manually",dlT:"Enjoying the project?",dlP:"This site is free and run by one person. A donation helps keep the project online.",dlD:"Donate",dlN:"Not now, download",doaG:"Continue to download"}};
 var CATEN={Todos:"All",Ferramentas:"Tools",Plugins:"Plugins",Mods:"Mods",Tutoriais:"Tutorials","Notícias":"News","Noticias":"News"};
 function tr(k){return (T[LANG]&&T[LANG][k])||T.pt[k]||k}
 // Tradução automática no navegador: usa o inglês já salvo e, se faltar, traduz sozinho e guarda no aparelho.
@@ -331,7 +345,7 @@ function desenhar(){
     a.href=/^https?:\/\//i.test(it.url)?it.url:"#"; a.target="_blank"; a.rel="noopener noreferrer";
     a.addEventListener("click",function(e){
       if(!/^https?:\/\//i.test(it.url)){e.preventDefault(); aviso(tr("semlink")+nmT(it))}
-      else aviso(tr("baixando")+nmT(it));
+      else{e.preventDefault(); pedeDoar(it.url,nmT(it))}
     });
     li.appendChild(h); li.appendChild(p); li.appendChild(a); lista.appendChild(li);
   });
@@ -552,15 +566,29 @@ function desenhaQR(txt){
     w.hidden=false;
   }catch(e){w.hidden=true}
 }
+var pend=null;
+function abreDoacao(comPendente){
+  $("doa").hidden=false; desenhaQR(PIXCOLA);
+  $("doaGo").hidden=!comPendente;
+  if(comPendente) $("doaGo").href=pend;
+}
+function pedeDoar(url,nome){
+  if(!PIX){window.open(url,"_blank","noopener");aviso(tr("baixando")+nome);return}
+  pend=url; $("dlNome").textContent=nome; $("dlGo").href=url; $("dlp").hidden=false;
+}
+$("dlGo").addEventListener("click",function(){$("dlp").hidden=true;aviso(tr("baixando")+$("dlNome").textContent)});
+$("doaGo").addEventListener("click",function(){$("doa").hidden=true;aviso(tr("baixando")+$("dlNome").textContent)});
+$("dlDoar").onclick=function(){$("dlp").hidden=true;abreDoacao(true)};
+$("dlp").addEventListener("click",function(e){if(e.target===this)this.hidden=true});
 if(!PIX){$("doar").hidden=true}
 else{
   var PIXCOLA=pixPayload(PIX);
   $("pixkey").textContent=PIX;
-  $("doar").onclick=function(){$("doa").hidden=false;desenhaQR(PIXCOLA)};
+  $("doar").onclick=function(){abreDoacao(false)};
   $("cp1").onclick=function(){copia(PIX)};
   $("cp2").onclick=function(){copia(PIXCOLA)};
   $("doaX").onclick=function(){$("doa").hidden=true};
-  document.addEventListener("keydown",function(e){if(e.key==="Escape")$("doa").hidden=true});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"){$("doa").hidden=true;$("dlp").hidden=true}});
 }
 
 // tela de boot
