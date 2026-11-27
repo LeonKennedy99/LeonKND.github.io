@@ -117,12 +117,31 @@ footer p{margin:0 0 8px;max-width:62ch}
 .lbtn{display:flex;align-items:center;gap:14px;width:100%;margin-top:12px;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;color:var(--ink);background:var(--panel);border:1px solid var(--accent);border-radius:999px;padding:12px 22px}
 .lbtn:hover,.lbtn:focus-visible{background:var(--accent);color:#000;outline:none}
 .lbtn svg{flex:0 0 auto;border-radius:4px}
+.dbtn{color:var(--yel);border-color:var(--yel)}
+#doa .bt{display:block;width:100%}
+#qr{display:block;max-width:100%;height:auto;margin:0 auto;border-radius:8px}
+#pixkey{user-select:all;-webkit-user-select:all}
+@media (max-width:480px){.stat [data-i="conn"]{display:none}}
 </style>
 </head>
 <body>
 <div id="boot"><div class="bootbox"><pre id="bootlog"></pre><div class="bar"><i></i></div><div class="skip">toque para pular</div></div></div>
 <div class="bg" role="img" aria-label="Fundo com caveira encapuzada em estilo pixelado"></div>
 <div id="toasts" aria-live="polite"></div>
+
+<div id="doa" class="view" hidden role="dialog" aria-modal="true" aria-labelledby="doa-t"><div class="vin">
+  <h2 id="doa-t" data-i="doaT">Doações</h2>
+  <p data-i="doaP">Este site é gratuito e mantido por uma pessoa. Se ele te ajudou, considere fazer uma doação pelo Pix para ajudar a manter o site no ar.</p>
+  <div class="box">
+    <label data-i="doaL">Chave Pix (aleatória)</label>
+    <code id="pixkey"></code>
+    <button class="bt" id="cp1" type="button" data-i="doaK">Copiar chave Pix</button>
+    <button class="bt sec" id="cp2" type="button" data-i="doaC">Copiar Pix copia e cola</button>
+    <div id="qrw" style="margin-top:16px" hidden><canvas id="qr" width="1" height="1" aria-label="QR Code Pix"></canvas></div>
+  </div>
+  <p data-i="doaN">Doação voluntária. Obrigado pelo apoio!</p>
+  <button class="bt sec" id="doaX" type="button" data-i="doaX">Fechar</button>
+</div></div>
 
 <div id="lang" hidden role="dialog" aria-modal="true" aria-labelledby="lang-t"><div class="lin">
   <h2 id="lang-t" class="gl" data-text="Selecione o idioma">Selecione o idioma</h2>
@@ -182,7 +201,7 @@ footer p{margin:0 0 8px;max-width:62ch}
 <div class="wrap">
   <div class="hud">
     <span class="brand gl" data-text="NULL_PS4">NULL_PS4</span>
-    <span class="stat"><span><i class="dot"></i><span data-i="conn">conexão segura</span></span><span id="relogio">--:--:--</span><button class="lgb" id="lgb" type="button" aria-label="Language">EN</button></span>
+    <span class="stat"><span><i class="dot"></i><span data-i="conn">conexão segura</span></span><span id="relogio">--:--:--</span><button class="lgb dbtn" id="doar" type="button" data-i="doar">Doações</button><button class="lgb" id="lgb" type="button" aria-label="Language">EN</button></span>
   </div>
 
   <section class="hero">
@@ -206,25 +225,27 @@ footer p{margin:0 0 8px;max-width:62ch}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script>
 // 1) PREENCHA: Supabase > Project Settings > API (URL e chave "anon public").
 var CONFIG={URL:"https://tdddygqvmvncnhrkmpvv.supabase.co",KEY:"sb_publishable_WTWjyAkiWalxjCFjx83LWw_Z_OnTQbV"};
 // ===== idioma (pt/en) =====
 var LANG="pt"; try{if(localStorage.getItem("lang")==="en")LANG="en"}catch(e){}
 var T={
-pt:{titulo:"NULL_PS4 · Mods e ferramentas para PS4 desbloqueado",meta:"Baixe ferramentas, plugins, mods e tutoriais para PS4 desbloqueado. Apenas homebrew.",conn:"conexão segura",h1:"Mods e ferramentas para PS4 desbloqueado",sub:"Baixe, instale e personalize seu console. Tudo em um só lugar.",noti:"> ler as notícias da cena PS4",sinal:"sinal",arq:"arquivos",status:"status",online:"online",busca:"buscar mod ou ferramenta",vazio:"Nada encontrado. Tente outra palavra.",f1:"Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.",f2:"Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.",f3:"Site de fã, sem ligação com a Ubisoft. Watch Dogs e DedSec são marcas dos seus donos.",baixar:"Baixar",semlink:"link ainda não configurado: ",baixando:"acesso concedido: baixando ",traduzindo:"traduzindo automaticamente..."},
-en:{titulo:"NULL_PS4 · Mods and tools for jailbroken PS4",meta:"Download tools, plugins, mods and tutorials for jailbroken PS4. Homebrew only.",conn:"secure connection",h1:"Mods and tools for jailbroken PS4",sub:"Download, install and customize your console. Everything in one place.",noti:"> read the PS4 scene news",sinal:"signal",arq:"files",status:"status",online:"online",busca:"search mods or tools",vazio:"Nothing found. Try another word.",f1:"This site only shares homebrew, tools and mods. We do not host or promote pirated games.",f2:"Use at your own risk: back up your saves before installing anything.",f3:"Fan site, not affiliated with Ubisoft. Watch Dogs and DedSec are trademarks of their owners.",baixar:"Download",semlink:"link not set up yet: ",baixando:"access granted: downloading ",traduzindo:"translating automatically..."}};
+pt:{titulo:"NULL_PS4 · Mods e ferramentas para PS4 desbloqueado",meta:"Baixe ferramentas, plugins, mods e tutoriais para PS4 desbloqueado. Apenas homebrew.",conn:"conexão segura",h1:"Mods e ferramentas para PS4 desbloqueado",sub:"Baixe, instale e personalize seu console. Tudo em um só lugar.",noti:"> ler as notícias da cena PS4",sinal:"sinal",arq:"arquivos",status:"status",online:"online",busca:"buscar mod ou ferramenta",vazio:"Nada encontrado. Tente outra palavra.",f1:"Este site compartilha apenas homebrew, ferramentas e mods. Não hospedamos nem divulgamos jogos pirateados.",f2:"Use por sua conta e risco: faça backup dos seus saves antes de instalar qualquer coisa.",f3:"Site de fã, sem ligação com a Ubisoft. Watch Dogs e DedSec são marcas dos seus donos.",baixar:"Baixar",semlink:"link ainda não configurado: ",baixando:"acesso concedido: baixando ",traduzindo:"traduzindo automaticamente...",doar:"Doações",doaT:"Doações",doaP:"Este site é gratuito e mantido por uma pessoa. Se ele te ajudou, considere fazer uma doação pelo Pix para ajudar a manter o site no ar.",doaL:"Chave Pix (aleatória)",doaK:"Copiar chave Pix",doaC:"Copiar Pix copia e cola",doaN:"Doação voluntária. Obrigado pelo apoio!",doaX:"Fechar",copiado:"copiado!",selec:"chave selecionada, copie manualmente"},
+en:{titulo:"NULL_PS4 · Mods and tools for jailbroken PS4",meta:"Download tools, plugins, mods and tutorials for jailbroken PS4. Homebrew only.",conn:"secure connection",h1:"Mods and tools for jailbroken PS4",sub:"Download, install and customize your console. Everything in one place.",noti:"> read the PS4 scene news",sinal:"signal",arq:"files",status:"status",online:"online",busca:"search mods or tools",vazio:"Nothing found. Try another word.",f1:"This site only shares homebrew, tools and mods. We do not host or promote pirated games.",f2:"Use at your own risk: back up your saves before installing anything.",f3:"Fan site, not affiliated with Ubisoft. Watch Dogs and DedSec are trademarks of their owners.",baixar:"Download",semlink:"link not set up yet: ",baixando:"access granted: downloading ",traduzindo:"translating automatically...",doar:"Donate",doaT:"Donations",doaP:"This site is free and run by one person. If it helped you, consider donating via Pix to help keep it online.",doaL:"Pix key (random)",doaK:"Copy Pix key",doaC:"Copy Pix copy-and-paste code",doaN:"Voluntary donation. Pix is a Brazilian payment method and needs a Brazilian bank account. Thank you for the support!",doaX:"Close",copiado:"copied!",selec:"key selected, copy it manually"}};
 var CATEN={Todos:"All",Ferramentas:"Tools",Plugins:"Plugins",Mods:"Mods",Tutoriais:"Tutorials","Notícias":"News","Noticias":"News"};
 function tr(k){return (T[LANG]&&T[LANG][k])||T.pt[k]||k}
 // Tradução automática no navegador: usa o inglês já salvo e, se faltar, traduz sozinho e guarda no aparelho.
+var TRAD_EMAIL=""; // (opcional) um e-mail seu aqui aumenta o limite diário do tradutor
 var TRAD={}, TRC={}, trFila=[], trOn=false, trAtual=null, trAviso=false, trTimer=null;
 try{TRC=JSON.parse(localStorage.getItem("trc")||"{}")}catch(e){}
 function tg(s){var k=(s||"").trim();return TRAD[k]||TRC[k]}
-function trParado(){try{return localStorage.getItem("trstop")===new Date().toDateString()}catch(e){return false}}
+function trParado(){try{return Date.now()-Number(localStorage.getItem("trstop")||0)<30*60*1000}catch(e){return false}}
 function trPartes(t){var o=[],c="";t.split(/(?<=[.!?])\s+/).forEach(function(s){while(s.length>240){o.push(s.slice(0,240));s=s.slice(240)}if((c+" "+s).length>240){if(c)o.push(c);c=s}else c=c?c+" "+s:s});if(c)o.push(c);return o}
 function trDec(s){return s.replace(/&#(\d+);/g,function(m,n){return String.fromCharCode(n)}).replace(/&quot;/g,'"').replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&")}
 function trUm(p){
-  return fetch("https://api.mymemory.translated.net/get?langpair=pt-BR%7Cen&q="+encodeURIComponent(p)).then(function(r){return r.json()}).then(function(j){
+  return fetch("https://api.mymemory.translated.net/get?langpair=pt-BR%7Cen&q="+encodeURIComponent(p)+(TRAD_EMAIL?"&de="+encodeURIComponent(TRAD_EMAIL):"")).then(function(r){return r.json()}).then(function(j){
     var s=j&&j.responseData&&j.responseData.translatedText;
     if(!s||Number(j.responseStatus)!==200||/MYMEMORY WARNING|QUERY LENGTH/i.test(s)) throw new Error("lim");
     return trDec(s);
@@ -238,7 +259,7 @@ function trRoda(){
     TRC[k]=s; try{localStorage.setItem("trc",JSON.stringify(TRC))}catch(e){}
     clearTimeout(trTimer); trTimer=setTimeout(function(){if(LANG==="en")desenhar()},1200);
   }).catch(function(){
-    trFila=[]; try{localStorage.setItem("trstop",new Date().toDateString())}catch(e){}
+    trFila=[]; try{localStorage.setItem("trstop",String(Date.now()))}catch(e){}
   }).then(function(){trOn=false;trAtual=null;setTimeout(trRoda,250)});
 }
 function trPede(k){
@@ -247,15 +268,18 @@ function trPede(k){
   if(!trAviso){trAviso=true;aviso(tr("traduzindo"))}
   trRoda();
 }
-function enT(txt,pre){
+function ptTexto(k){return /[áàâãéêíóôõúç]|\s(de|do|da|dos|das|para|com|sem|em|no|na|um|uma|que|e|ou|os|as|ao|pelo|pela)\s/i.test(k)}
+function enT(txt,pre,nome){
   if(!txt) return txt;
-  if(pre) return pre;
-  var k=String(txt).trim(), a=tg(k);
+  var k=String(txt).trim();
+  if(pre&&String(pre).trim()!==k) return pre;
+  var a=tg(k);
   if(a) return a;
+  if(nome&&!ptTexto(k)) return txt;
   trPede(k); return txt;
 }
-function catT(c){return LANG==="en"?(CATEN[c]||enT(c)):c}
-function nmT(it){return LANG==="en"?enT(it.nome,it.nome_en):it.nome}
+function catT(c){return LANG==="en"?(CATEN[c]||enT(c,null,true)):c}
+function nmT(it){return LANG==="en"?enT(it.nome,it.nome_en,true):it.nome}
 function dsT(it){return LANG==="en"?enT(it.desc,it.desc_en):it.desc}
 // 2) EDITE: troque "#" pelo link de download de cada item e adicione os seus.
 var itens = [
@@ -289,7 +313,7 @@ function aviso(txt){
 }
 
 function desenhar(){
-  var q=busca.value.trim().toLowerCase(); lista.textContent=""; var achou=0;
+  var q=busca.value.trim().toLowerCase(); lista.textContent=""; trFila=[]; var achou=0;
   itens.concat(window.NOTICIAS||[]).forEach(function(it,i){
     if(atual!=="Todos"&&it.cat!==atual) return;
     if(q&&(it.nome+" "+it.desc+" "+nmT(it)+" "+dsT(it)).toLowerCase().indexOf(q)===-1) return;
@@ -503,6 +527,41 @@ $("lgb").onclick=function(){setLang(LANG==="en"?"pt":"en")};
 $("lang-pt").onclick=function(){setLang("pt");fechaLang()};
 $("lang-en").onclick=function(){setLang("en");fechaLang()};
 aplicar();
+
+// ===== doações (Pix) =====
+var PIX="b3baeeaa-4749-4ab4-b510-87090154188e"; // chave Pix mostrada no botão Doações
+function pixPayload(key){
+  function f(id,v){return id+("0"+v.length).slice(-2)+v}
+  var p=f("00","01")+f("26",f("00","br.gov.bcb.pix")+f("01",key))+f("52","0000")+f("53","986")+f("58","BR")+f("59","DOACAO")+f("60","BRASIL")+f("62",f("05","***"))+"6304";
+  var crc=0xFFFF;
+  for(var i=0;i<p.length;i++){crc^=p.charCodeAt(i)<<8;for(var j=0;j<8;j++){crc=(crc&0x8000)?((crc<<1)^0x1021):(crc<<1);crc&=0xFFFF}}
+  return p+("000"+crc.toString(16).toUpperCase()).slice(-4);
+}
+function copia(txt){
+  function sel(){var r=document.createRange();r.selectNodeContents($("pixkey"));var s=window.getSelection();s.removeAllRanges();s.addRange(r);aviso(tr("selec"))}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){aviso(tr("copiado"))},sel)}else sel();
+}
+function desenhaQR(txt){
+  var w=$("qrw"),c=$("qr");
+  if(!window.qrcode){w.hidden=true;return}
+  try{
+    var q=qrcode(0,"M");q.addData(txt);q.make();
+    var n=q.getModuleCount(),sc=5,m=4,tam=(n+2*m)*sc,x=c.getContext("2d");
+    c.width=c.height=tam;x.fillStyle="#fff";x.fillRect(0,0,tam,tam);x.fillStyle="#000";
+    for(var r=0;r<n;r++)for(var k=0;k<n;k++)if(q.isDark(r,k))x.fillRect((k+m)*sc,(r+m)*sc,sc,sc);
+    w.hidden=false;
+  }catch(e){w.hidden=true}
+}
+if(!PIX){$("doar").hidden=true}
+else{
+  var PIXCOLA=pixPayload(PIX);
+  $("pixkey").textContent=PIX;
+  $("doar").onclick=function(){$("doa").hidden=false;desenhaQR(PIXCOLA)};
+  $("cp1").onclick=function(){copia(PIX)};
+  $("cp2").onclick=function(){copia(PIXCOLA)};
+  $("doaX").onclick=function(){$("doa").hidden=true};
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")$("doa").hidden=true});
+}
 
 // tela de boot
 var boot=$("boot");
