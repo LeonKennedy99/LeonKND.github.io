@@ -601,5 +601,7 @@
  "Tutorial: Como instalar PKGs remotamente do PC com o DirectPackageInstaller (DPI)": "Tutorial: How to install PKGs remotely from a PC using DirectPackageInstaller (DPI)",
  "Aprenda a instalar arquivos PKG via rede sem precisar de HD Externo.": "Learn how to install PKG files over a network without needing an external hard drive.",
  "Tutorial: Como usar o PS4 Syscon Tool com Arduino para Diagnóstico de Hardware": "Tutorial: How to Use the PS4 Syscon Tool with Arduino for Hardware Diagnostics",
- "Recupere consoles e faça diagnósticos avançados de hardware usando Arduino.": "Recover consoles and perform advanced hardware diagnostics using Arduino."
+ "Recupere consoles e faça diagnósticos avançados de hardware usando Arduino.": "Recover consoles and perform advanced hardware diagnostics using Arduino.",
+ "PPPwn-Go v1.0.2: Exploit em Go para FW 11.00 com Melhoria de Performance": "PPPwn-Go v1.0.2: Go Exploit for FW 11.00 with Performance Improvement",
+ "Nova implementação do exploit PPPwn em linguagem Go focada em estabilidade.": "New implementation of the PPPwn exploit in Go language, focused on stability."
 }
